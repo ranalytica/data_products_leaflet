@@ -55,7 +55,7 @@ top20confirmed <- TexasMaxDate %>% dplyr::filter(Ranking <= 20)
 
 
 ```{r message=FALSE, echo=FALSE, warning=FALSE, cache=TRUE}
-CountryColor <- colorFactor(viridis(76), top20confirmed$county)
+CountryColor <- colorFactor(viridis(76), top20confirmed$Ranking)
 
 leaflet(data = top20confirmed) %>% addTiles() %>% 
             setView(lng = -99.89007,
@@ -69,9 +69,9 @@ leaflet(data = top20confirmed) %>% addTiles() %>%
                              radius = ~ sqrt(confirmed)*.2,
                              stroke = FALSE,
                              fillOpacity = .7,
-                             fillColor = ~CountryColor(county)
+                             fillColor = ~CountryColor(Ranking)
             ) %>% 
-            addLegend("bottomright", pal = CountryColor, values = ~county, labels = "COVID19 - Top 20 Counties")
+            addLegend("bottomright", pal = CountryColor, values = ~Ranking, labels = "COVID19 - Top 20 Counties")
 ```
 
 
