@@ -1,0 +1,72 @@
+---
+title: "COVID19 - Top 20 Counties Confirmed in Texas"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r, echo=FALSE, message=FALSE, results='hide'}
+Date_Today <- date()
+```
+
+Date published: `r Date_Today`
+
+The information below is to satisfy school assignment only. 
+
+![Github](./Octocat.png) [view mycode](https://github.com/ranalytica/data_products_leaflet){target="_blank"} 
+
+![Rpubs](./rpubs.png) [view website](https://rpubs.com/Ranalytica/covid19_TX)
+```{r message=FALSE, warning=FALSE}
+library(leaflet)
+library(COVID19)
+library(tidyverse)
+```
+
+```{r message=FALSE, echo=FALSE, results='hide', cache=TRUE, warning=FALSE}
+X <- covid19(c("US"), level = 3)
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, cache=TRUE}
+Texas <- X %>% filter(administrative_area_level_2 =="Texas")
+TexasMaxDate <- Texas %>% dplyr::filter(date == max(date))
+
+
+
+TexasMaxDate <-
+  TexasMaxDate %>% dplyr::select(
+    date,
+    longitude,
+    latitude,
+    confirmed,
+    deaths,
+    recovered,
+    state = administrative_area_level_2,
+    county = administrative_area_level_3
+  )
+
+TexasMaxDate$Ranking <- rank(desc(TexasMaxDate$confirmed))
+
+top20confirmed <- TexasMaxDate %>% dplyr::filter(Ranking <= 20)
+
+
+leaflet(data = top20confirmed) %>% addTiles() %>% 
+            setView(lng = -99.89007,
+                    lat = 32.30163,
+                    zoom = 5) %>% 
+             
+            addCircleMarkers(~ longitude,
+                             ~ latitude,
+                             popup = paste("County: ", top20confirmed$county, "<br>",
+                                           "Confirmed: ", top20confirmed$confirmed),
+                             weight = 1,
+                             radius = ~ sqrt(confirmed)*.2,
+                             stroke = FALSE,
+                             fillOpacity = .3,
+                             color = top20confirmed$county
+            )
+```
+
+
+
+
+
