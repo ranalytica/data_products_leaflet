@@ -70,7 +70,8 @@ leaflet(data = top20confirmed) %>% addTiles() %>%
                              stroke = FALSE,
                              fillOpacity = .7,
                              fillColor = ~CountryColor(county)
-            )
+            ) %>% 
+            addLegend("bottomright", pal = CountryColor, values = ~county, labels = "COVID19 - Top 20 Counties")
 ```
 
 
