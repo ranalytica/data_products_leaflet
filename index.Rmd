@@ -20,6 +20,8 @@ The information below is to satisfy school assignment only.
 library(leaflet)
 library(COVID19)
 library(tidyverse)
+library(viridisLite)
+library(viridis)
 ```
 
 ```{r message=FALSE, echo=FALSE, results='hide', cache=TRUE, warning=FALSE}
@@ -47,13 +49,18 @@ TexasMaxDate <-
 TexasMaxDate$Ranking <- rank(desc(TexasMaxDate$confirmed))
 
 top20confirmed <- TexasMaxDate %>% dplyr::filter(Ranking <= 20)
+```
 
+
+
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, cache=TRUE}
+CountryColor <- colorFactor(viridis(76), top20confirmed$county)
 
 leaflet(data = top20confirmed) %>% addTiles() %>% 
             setView(lng = -99.89007,
                     lat = 32.30163,
                     zoom = 5) %>% 
-             
             addCircleMarkers(~ longitude,
                              ~ latitude,
                              popup = paste("County: ", top20confirmed$county, "<br>",
@@ -61,8 +68,8 @@ leaflet(data = top20confirmed) %>% addTiles() %>%
                              weight = 1,
                              radius = ~ sqrt(confirmed)*.2,
                              stroke = FALSE,
-                             fillOpacity = .3,
-                             color = top20confirmed$county
+                             fillOpacity = .7,
+                             fillColor = ~CountryColor(county)
             )
 ```
 
